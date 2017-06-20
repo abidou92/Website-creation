@@ -1,27 +1,8 @@
-/*jslint browser: true, nomen: true, white: true */
-/*!
- * responsiveCarousel  v 1.7.3
- * A responsive carousel that works in desktop browsers, ipad, iphone, and even
- * most Androids.  It uses css3 animations with a jquery animation fallback for
- * greater speed.  The code was optimized to minimize page reflows to further
- * enhance the overall speed..
- *
- * This is a jQuery UI Widget
- *
- * merge with github
- *
- * New:  fixes to individual mode.  Also does fraction of time if fraction of individual is showing.
- *
- * @version 1.7.3
- * @releaseDate 6/27/2013
- * @author Matthew Toledo
- * @url https://github.com/mrbinky3000/responsive_carousel
- * @requires jQuery, jQuery UI (only the Core and Widget Factory), modernizr (only css3 transitions test, touch test optional), hammer.js
- */
+
 (function ($, window, document) {
     "use strict";
 
-    // note: any vars declared out here are read-writeable by each instance of the carousel.
+   
     var instanceCount = 0;
 
     $.widget("ri.responsiveCarousel", {
