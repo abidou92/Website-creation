@@ -32,16 +32,9 @@
             delta: 1,
             dragVertical: false,
             dragPreventDefault: false,
-            lazyload: false // work with lazyload.js plugin http://www.appelsiini.net/projects/lazyload
+            lazyload: false 
         },
 
-        /**
-         * Automatically add the correct vendor specific prefix for a css property if there is no native support.
-         *
-         * @param prop string A string representing a CSS property
-         * @return string The prefixed CSS property if prefixing exists. If there is also an non-prefixed version or no prefix exists, return the original non-prefixed value of prop.
-         * @private
-         */
         _getPrefix: function (prop) {
             var prefixes = ['Moz', 'Webkit', 'Khtml', '0', 'ms'],
                 elem = document.createElement('div'),
@@ -67,42 +60,16 @@
         },
 
 
-        /**
-         * Rounds the number X to the nearest interval of internal.unitWidth.
-         *
-         * Only if options.unitWidth !== 'individual'
-         *
-         * Some browsers seem dead set on providing fractions of pixels when using jQuery's $.position()
-         * method.  It could be a browser peculiarity or just a side-effect of JavaScript's  weird
-         * handling of floating numbers.  Either way, this function fixes that by always providing us
-         * with whole number multiple of the unitWidth.  It's great for figuring out the "left" of the
-         * slider target so that the slider doesn't slide past the left or right boundaries.
-         *
-         * @param x number
-         * @return x number
-         * @private
-         */
+     
         _round: function (x) {
-            // round x to the nearest interval of internal.unitWidth
+           
             if (this.options.unitWidth === 'compute' || this.options.unitWidth === 'inherit' || this.options.unitWidth === 'integer') {
                 x = Math.round( x / this.internal.unitWidth) * this.internal.unitWidth;
             }
             return x;
         },
 
-        /**
-         * A proxy function that should be called to animate stuff instead of using jQuery's $.animate() function.
-         * If the user's browser supports CSS3 Transitions, we use them since they are faster.  If they don't support
-         * Transitions, we jQuery's default $.animate() method which is fast on newer computers, but slower on some
-         * under-powered mobile devices.  $.animate() also causes page reflows, which we are trying to avoid.
-         *
-         * @param $target
-         * @param props object The css attributes to animate
-         * @param speed integer Speed in milliseconds
-         * @param callback function A function to call after the animation is done
-         * @return {*} This is chain-able.
-         * @private
-         */
+        
         _animate: function ($target, props, speed, callback) {
 
             var options = this.options,
@@ -189,14 +156,7 @@
 
         },
 
-        /**
-         * Shim for requestAnimationFrame
-         *
-         * http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-         * http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-         * requestAnimationFrame polyfill by Erik MÃ¶ller
-         * fixes from Paul Irish and Tino Zijdel
-         */
+      
         _requestAnimationFrameShim: function() {
             var lastTime = 0,
                 vendors = ['ms', 'moz', 'webkit', 'o'],
@@ -230,14 +190,7 @@
             }
         },
 
-        /**
-         * Compute the new width for the target element (the element that holds all the things
-         * that slide). Store the new width in our internal object.  Finally, assign the target
-         * the new width.
-         *
-         * @return void
-         * @private
-         */
+       
         _setTargetWidth: function () {
             var internal = this.internal,
                 options = this.options,
@@ -251,19 +204,17 @@
             function _individual(dom) {
                 var width,
                     $this = $(dom);
-                // clear any previous width that we set.  Let the browser re-draw naturally.
+                
                 $this.css('width','');
 
-                // get rid of any sub-pixels. Only whole numbers please.  Some browsers have sub pixels
-                // even though we set stuff to whole numbers.  Might have to do with borders or
-                // padding, not sure.  Don't care.
-                width = Math.ceil($this.width()) + 1;  // +1px is because IE9 SUCKS!!!!!!!!!!
+                
+                width = Math.ceil($this.width()) + 1;  
                 $this.width(width);
 
-                // add the whole number width to the running width total
+              
                 internal.targetWidth = internal.targetWidth + width;
 
-                // store all this in a data
+               
                 $this.data("responsiveCarousel",{
                     'width' : width,
                     'top' : Math.floor($this.position().top),
@@ -273,8 +224,7 @@
                 });
             }
 
-            // if we are doing individual widths, then loop through all the unitElements and
-            // save each width as element data while totalling the width.
+            
             i = numUnits;
             if (options.unitWidth === 'individual') {
                 internal.targetWidth = 0;
@@ -282,24 +232,19 @@
                     _individual($units[i]);
                 }
             }
-            // All other unitWidth modes have units with identical widths.
+            
             else {
                 internal.targetWidth =  internal.numUnits * internal.unitWidth;
             }
 
 
-            $(options.target).width(internal.targetWidth); // target width (no border or padding)
+            $(options.target).width(internal.targetWidth); 
             internal.targetHeight = $(options.target).height();
             internal.maskWidth = $(options.mask).width();
             internal.maskHeight = $(options.mask).height();
         },
 
-        /**
-         * Set the visibility of the left and right scroll arrows.  Also computes the number of
-		 * the left-most visible slide for all modes besides 'individual'
-         * @private
-         * @return void
-         */
+        
         _setArrowVisibility: function () {
 
             var options = this.options,
@@ -310,7 +255,7 @@
                 maskLeft = 0,
                 i,
                 maskRight = internal.maskWidth,
-                currentLeft  = this._round(Math.floor($target.position().left)), // position does not include for margin & border of parent
+                currentLeft  = this._round(Math.floor($target.position().left)), 
                 currentRight = internal.targetWidth + currentLeft;
 
 			// right arrow
@@ -344,19 +289,17 @@
             }
 
 
-			// determine number of left-most visible slide
+			
             if (options.unitWidth !== 'individual')  {
-                // All the other unit width modes (compute, inherit, integer) have units with the same
-                // width. So, it's easy to use math to find the current leftmost element.
-                // this could be NaN if slider is display:none.
+                
                 internal.currentSlide = $(options.unitElement).eq([Math.abs(currentLeft / internal.unitWidth)]).data('slide');
                 i = internal.currentSlide;
             }
 
 
-            // call the onShift callback
+            
 			if ($.isFunction(options.onShift)) {
-                if (typeof i === 'number') { // carousel might be hidden and therefore has no dimensions. So, no shift.
+                if (typeof i === 'number') {
                     options.onShift(i);
                 }
 			} else if (options.onShift !== null ) {
@@ -377,12 +320,7 @@
 
         },
 
-		/**
-		 * Handles when one of navigation arrows is being pressed with a finger or the mouse.
-         * Also determines the left or right most visible slide when mode set to 'individual'
-		 * @private
-		 * @return void
-		 */
+	
 		_doArrowBeingClicked: function (direction) {
 
             var that = this,
@@ -405,10 +343,10 @@
 
             if (options.unitWidth === 'individual') {
 
-                // when options.unitWidth is set to "individual" each unit has a unique width.
+      
                 if (direction === 'right') {
                     if (internal.lastArrowClicked === 'right') {
-                        // already going right.  going right again.
+                       
                         if (i < internal.numUnits - 1) {
                             i = i + 1;
                             d = $(options.unitElement).eq(i).data('responsiveCarousel');
@@ -416,7 +354,7 @@
                             internal.currentSlide = i;
                         }
                     } else {
-                        // switched direction from left to right, or page just loaded and this is first nav click
+                        
                         internal.lastArrowClicked = 'right';
                         r = -1 * currLeft + internal.maskWidth;
                         j = internal.numUnits;
@@ -507,11 +445,7 @@
 
         },
 
-        /**
-         * Initialize the left and right arrow events.
-         * @private
-         * @return void
-         */
+       
         _setArrowEvents: function () {
 
             var that = this,
@@ -624,34 +558,7 @@
 
         },
 
-        /**
-         * Figure out the width of each slider element (usually an li)
-         *
-         * "inherit"
-         * ---------
-         * If options.unitWidth is set to the string 'inherit', use the current width of the
-         * first slide unit encountered.  For example, if the slideUnit config option is 'li'
-         * Then all the li blocks get assigned the same width as the first 'li' element
-         * encountered.
-         *
-         * "individual"
-         * ------------
-         * If options.unitWidth is set to 'individual', each element can have it's own unique
-         * width.  When done dragging, snap the leftmost visible element to the left so that.
-         *
-         * "compute"
-         * --------
-         * If options.unitWidth is set to the string 'compute', use an external callback to
-         * dynamically determine the width based on any function you create.  that function
-         * must return an integer with the new unit width.
-         *
-         * integer
-         * -------
-         * If options.unitWidth is an integer, it is converted to a pixel width.
-         *
-         * @private
-         * @return void
-         */
+       
         _setUnitWidth: function () {
 
             var w, m,
@@ -695,14 +602,13 @@
                 },
 
                 _imgCompute = function (el) {
-                    // sometimes stuff like fonts get loaded as img and cause an infinite loop
-                    // combat with a jQuery "one" load per image. Jquery bug? Browser bug?
+              
                     $(el).one('load' + that.instanceId, function () {
-                        // only do stuff if this is visible
+                     
                         if ($target.is(':hidden') === false || $target.is(':visible') === true) {
                             window.clearTimeout(internal.imageLoadTimer);
                             internal.imageLoadTimer = window.setTimeout(function(){
-                                // fire the responsiveUnitSize callback
+                                
                                 if ($.isFunction(options.responsiveUnitSize)) {
                                     _setResponsiveUnitWidth();
                                 }
@@ -725,10 +631,7 @@
                 _importWidthFromDOM();
 
 
-                // If the target has images in it's child elements, these images
-                // can cause the widths to change as the page is updated. To counter
-                // this, we'll re-run _importWidthFromDom after each image load in the
-                // target or it's child elements.
+               
                 $target.find('img').one('load' + that.instanceId, function () {
                     // fire the responsiveUnitSize callback
                     _importWidthFromDOM();
@@ -753,10 +656,7 @@
                     options.onRedraw($el, internal, options);
                 }
 
-                // If the target has images in it's child elements, these images
-                // can cause the widths to change as the page is updated. To counter
-                // this, we'll re-run _setTargetWidth() after each image load in the
-                // target or it's child elements.
+                
                 $target.find('img').one('load' + that.instanceId, function () {
                     if ($target.is(':hidden') === false || $target.is(':visible') === true) {
                         window.clearTimeout(internal.imageLoadTimer);
@@ -837,17 +737,14 @@
                     options.onRedraw($el, internal, options);
                 }
 
-                // If the target has images in it's child elements, these images
-                // can cause the widths to change as the page is updated. To counter
-                // this, we'll re-run _importWidthFromDom after each image load in the
-                // target or it's child elements.
+               
                 $doms = $target.find('img');
                 length = $doms.length;
                 for (q = 0; q < length; ++q) {
                     _imgCompute($doms[q]);
                 };
 
-                // re-import the width every time the page is re-sized.
+               
                 $(window).on('resize' + that.instanceId, function () {
                     var preAdjustSlide = internal.currentSlide;
 
@@ -894,12 +791,7 @@
             }
         },
 
-        /**
-         * Handle optional drag events.  Works on touch and non-touch screens via mouse drag.
-         *
-         * @private
-         * @return void
-         */
+        
         _dragEvents: function () {
 
             var that = this,
@@ -952,9 +844,7 @@
                     left = scroll_start.left + ev.distance * delta;
                     distance = Math.abs(internal.scrollStart.left - left);
 
-                    // Determine if we've nudged the slider just enough to pass the minimum threshold for initiating a slide
-                    // nudge must be more than the threshold, but less than the total unit width. if nudged, raise a flag
-                    // that is handled by computeAdjust() later.
+                   
                     if (options.unitWidth === 'individual') {
                         if (distance > options.nudgeThreshold) {
                             if (ev.direction === 'up' || ev.direction === 'left') {
@@ -977,9 +867,9 @@
                        }
                     }
 
-                    // hey!  infinite scrolling!
+                    
                     if (options.infinite === true) {
-                        // ex: start of clones is -1000 if there are 10 units 100px wide
+                        
                         if (left <= startOfClones) {
                             left = ev.distance * delta;
                             internal.scrollStart.left = 0;
@@ -1068,19 +958,10 @@
         },
 
 
-        /**
-         * Setup widget (eg. element creation, apply theming, bind events etc.)
-         * @private
-         * @return Void
-         */
+        
         _create: function () {
 
-            // _create will automatically run the first time
-            // this widget is called. Put the initial widget
-            // setup code here, then you can access the element
-            // on which the widget was called via this.element.
-            // The options defined above can be accessed
-            // via this.options this.element.addStuff();
+        
 
             instanceCount = instanceCount + 1;
 
@@ -1104,7 +985,7 @@
                 targetBackupCopy: null,
                 isArrowBeingClicked: false,
                 lastArrowClicked: null,
-                arrowLeftVisible: true,  // when page first loads, both arrows are visible until _setArrowVisibility() called
+                arrowLeftVisible: true,  
                 arrowRightVisible: true,
                 targetLeft: 0,
                 timer: null,
@@ -1125,24 +1006,18 @@
                 touchObject: null,
                 setWidthTimer: null,
                 lazyloaded: false,
-                ios6Device: false // iOS6 has a documented bug where scrolling causes all window.setTimeout and window.setInterval events to be destroyed.
-
+                ios6Device: false 
             };
 
-            // --------------------
-            // _create MAIN FLOW
-            // --------------------
-
-            // backup original target element
+           
             this.internal.backup = $target.clone(true,true);
 
-            // if we are using css3 animations, determine the browser specific prefix (-ie,-moz,-webkit, etc)
+            
             if (this.options.cssAnimations) {
                 this.internal.prefix = this._getPrefix('transition');
             }
 
-            // hey, mobile safari has a huge bug on iOS6
-            // http://openradar.appspot.com/12756410
+            
          	if(/(iPhone|iPod|iPad)/i.test(navigator.userAgent)) {
                 if(/OS 6_/i.test(navigator.userAgent)){
                 	this.internal.ios6Device = true;
@@ -1160,20 +1035,20 @@
             // put the instance ID where we can see it in developer tools
             $target.addClass('instance-' + instanceCount);
 
-            //number all the unitElements
+           
             $(options.unitElement).each(function (i) {
                 $(this).attr({"data-slide": i});
             });
 
-            // init touch events if applicable
+            
             if (options.dragEvents === true) {
                 this._dragEvents();
             }
 
-            // handle when people click on the left and right navigation arrows
+            
             this._setArrowEvents();
 
-            // initialize lazy load
+           
             if (options.lazyload === true) {
                 $(options.target).find('img.lazy-slider').lazyload({
                     effect : "fadeIn",
@@ -1181,8 +1056,7 @@
                 });
             }
 
-            // if the target is in a hidden div, this will have to be delayed until they
-            // call "redraw" method (double test because ie9 acts stooopid)
+            
             if ($target.is(':visible') === true || $target.is(':hidden') === false) {
                 this._setUnitWidth();
                 this._setTargetWidth();
@@ -1201,11 +1075,7 @@
 
         },
 
-        /**
-         * Play nicely with lazyLoad.js (config option)
-         * @url http://www.appelsiini.net/projects/lazyload
-         * @private
-         */
+        
         _lazyLoad: function () {
             var internal = this.internal,
                 id = this.instanceId,
@@ -1252,16 +1122,13 @@
                 return r;
             }
 
-            // IE 8 sucks the big one.  Carousel arrows won't work while ie8 is busy loading images. Poor multi-tasking.
+          
             if (true === $.browser.msie && $.browser.version.substring(0, 2) === '8.') {
                 _loadAllImages();
             } else {
-                // THIS code is for everything but ie8
-                // -----------------------------------
-                // we only need to set up these events ONE time.  If we've already done so, leave.
+               
                 if (false === internal.lazyloaded) {
-                    // try lazy loading the visible images right now, then try again on window load.
-                    // by trying both times, all possible circumstances are covered.
+                    
                     _loadInitialImages();
                     $(window).on('load',function(){
                         _loadInitialImages();
@@ -1302,11 +1169,7 @@
         },
 
 
-        /**
-         * Force a redraw of the carousel.
-         * @public
-         * @return void
-         */
+        
         redraw: function () {
             var that = this,
                 internal = this.internal,
@@ -1316,8 +1179,7 @@
 
 
 
-            // only redraw if the slider is visible, otherwise it gets all zeros
-            // ie requires .not(":hidden")
+           
             if ($(options.target).is(":visible") || $(options.target).not(":hidden")) {
                 if (this.unitWidth === undefined) {
                     this._setUnitWidth();
@@ -1333,19 +1195,12 @@
             }
         },
 
-        /**
-         * return the number of the current slide.  numbering starts at zero.
-         * @public
-         * @return integer
-         */
+      
 		getCurrentSlide: function () {
 			return this.internal.currentSlide;
 		},
 
-        /**
-         * Make a specified slide the left-most visible slide in the slider
-         * @public
-         */
+        
 		goToSlide: function (i,a) {
             var that = this,
                 internal = this.internal,
@@ -1355,7 +1210,7 @@
 
             a = (a !== undefined) ? a : true;
 
-            // only do stuff if the target is visible, otherwise widths are all 0's
+            
             if ($target.not(":hidden"))  {
                 if (this.unitWidth === undefined){
                     this._setUnitWidth();
@@ -1379,10 +1234,7 @@
 
 		},
 
-        /**
-         * Activate / Deactivate slide show mode.
-         * @public
-         */
+        
 		toggleSlideShow: function () {
 
 
@@ -1413,13 +1265,13 @@
             if (internal.slideBumped === false) {
 
                 if (options.infinite === false) {
-                     // too far left
+                    
                     if (newRight <= width) {
                         adjustedLeft = newLeft + width - newRight;
                         internal.slideBumped = 'left';
                     }
 
-                    // too far right
+                   
                     if (newLeft >= 0) {
                         internal.slideBumped = 'right';
                         adjustedLeft = 0;
@@ -1471,16 +1323,12 @@
             }
         },
 
-        /**
-         * Destroy this plugin and clean up modifications the widget has made to the DOM
-         * @public
-         * @return void
-         */
+        
         _destroy: function () {
             var $target = $(this.options.target),
                 $mask = $(this.options.mask);
 
-            // remove events created by this instance
+            
             window.clearTimeout(this.internal.setWidthTimer);
             window.clearInterval(this.internal.slideTimer);
             window.clearTimeout(this.internal.scrollTimer);
@@ -1503,21 +1351,7 @@
 
             $target.replaceWith(this.internal.backup);
 
-            // For UI 1.8, destroy must be invoked from the base widget
-            // $.Widget.prototype.destroy.call(this);
-            // For UI 1.9, there is no need to do anything else, this method has you covered.
-        },
-
-
-
-        /**
-         * Try to keep the leftmost visible element (usually an LI) flush against the left border.
-         * Use this to prevent on fractions of elements from being visible.
-         * @public
-         * @param $target jQuery
-         * @param s string Optional string used for debugging
-         * @return integer
-         */
+            
         computeAdjust : function ($target) {
 
 
